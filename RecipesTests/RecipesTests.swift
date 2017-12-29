@@ -33,4 +33,20 @@ class RecipesTests: XCTestCase {
         }
     }
     
+    // MARK: Recipe Class Tests
+    
+    // Confirm that the Meal initializer returns a Meal object when passed valid parameters.
+    func testRecipeInitializationSucceeds() {
+        // Normal Case
+        let zeroRatingMeal = Recipe.init(name: "Bread", photo: nil, ingredients: ["flour"], directions: ["bake"])
+        XCTAssertNotNil(zeroRatingMeal)
+        
+    }
+    
+    // Confirm that the Meal initialier returns nil when passed a negative rating or an empty name.
+    func testRecipeInitializationFails() {
+        // No name
+        let negativeRatingMeal = Recipe.init(name: "", photo: nil, ingredients: ["arugula"], directions: ["bake"])
+        XCTAssertNil(negativeRatingMeal)
+    }
 }

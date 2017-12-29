@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  RecipeViewController.swift
 //  Recipes
 //
 //  Created by Chris Doornink on 12/29/17.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
+class RecipeViewController: UIViewController {
 
+    // MARK: Properties
+    @IBOutlet weak var recipeName: UILabel!
+    @IBOutlet weak var recipeImage: UIImageView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 
