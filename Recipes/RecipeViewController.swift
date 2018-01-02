@@ -14,10 +14,16 @@ class RecipeViewController: UIViewController {
     @IBOutlet weak var recipeName: UILabel!
     @IBOutlet weak var recipeImage: UIImageView!
     
+    var recipe: Recipe?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        if let recipe = recipe {
+            recipeName.text = recipe.name
+            recipeImage.image = recipe.photo
+        }
     }
 
 

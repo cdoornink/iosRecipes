@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class RecipeTableViewController: UITableViewController {
 
@@ -86,26 +87,43 @@ class RecipeTableViewController: UITableViewController {
     }
     */
 
-    /*
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        super.prepare(for: segue, sender: sender)
+        
+        if segue.identifier == "ShowDetail" {
+            guard let recipeViewController = segue.destination as? RecipeViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let selectedCell = sender as? RecipeTableViewCell else {
+                fatalError("Unexpected sender: \(String(describing: sender))")
+            }
+            
+            guard let indexPath = tableView.indexPath(for: selectedCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            
+            let selectedRecipe = recipes[indexPath.row]
+            recipeViewController.recipe = selectedRecipe
+        }
     }
-    */
+
     
     // MARK: Private Methods
     
     private func loadSampleRecipes() {
-        let photo1 = UIImage(named: "defaultMeal")
+        let photo1 = UIImage(named: "chicken-casserole")
+        let photo2 = UIImage(named: "golden-coconut-lentil-soup")
 
         guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: ["pasta", "chicken"], directions: ["cook the damn thing"]) else {
             fatalError("Unable to instanstiate recipe1")
         }
         
-        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo1, ingredients: ["bread", "pork"], directions: ["put them together"]) else {
+        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: ["bread", "pork"], directions: ["put them together"]) else {
             fatalError("Unable to instanstiate recipe2")
         }
         
