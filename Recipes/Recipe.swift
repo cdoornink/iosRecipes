@@ -14,12 +14,12 @@ class Recipe {
     
     var name: String
     var photo: UIImage?
-    var ingredients: Array<String>?
+    var ingredients: Array<Dictionary<String, Any>>?
     var directions: Array<String>?
     
     // MARK: Initialization
     
-    init?(name: String, photo: UIImage?, ingredients: Array<String>?, directions: Array<String>?) {
+    init?(name: String, photo: UIImage?, ingredients: Array<Dictionary<String, Any>>?, directions: Array<String>?) {
         
         if name.isEmpty {
             return nil

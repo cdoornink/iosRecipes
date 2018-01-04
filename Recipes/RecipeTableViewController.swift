@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import os.log
+
+import Firebase
+import FirebaseDatabase
 
 class RecipeTableViewController: UITableViewController {
 
@@ -15,10 +17,15 @@ class RecipeTableViewController: UITableViewController {
     
     var recipes = [Recipe]()
     
+    var ref: DatabaseReference!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        loadSampleRecipes()
+//        loadSampleRecipes()
+        self.loadRecipes()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -94,6 +101,7 @@ class RecipeTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
+        // gets the selected recipe item and passes it through to the RecipeViewController
         if segue.identifier == "ShowDetail" {
             guard let recipeViewController = segue.destination as? RecipeViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
@@ -119,16 +127,48 @@ class RecipeTableViewController: UITableViewController {
         let photo1 = UIImage(named: "chicken-casserole")
         let photo2 = UIImage(named: "golden-coconut-lentil-soup")
 
-        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: ["pasta", "chicken"], directions: ["cook the damn thing"]) else {
+        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["cook the damn thing"]) else {
             fatalError("Unable to instanstiate recipe1")
         }
         
-        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: ["bread", "pork"], directions: ["put them together"]) else {
+        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["put them together"]) else {
             fatalError("Unable to instanstiate recipe2")
         }
         
         recipes += [recipe1, recipe2]
         
     }
+    
+    private func loadRecipes() {
+        
+        ref = Database.database().reference()
+        
+        ref.child("recipes").observe(.value, with: { (snapshot) in
+            
+            var recipes = [Recipe]()
+            
+            for child in snapshot.children {
+                let childSnapshot = child as! DataSnapshot
+                
+                let recipe = childSnapshot.value as? [String : AnyObject] ?? [:]
+                
+                let recipeName = recipe["title"] as! String
+                let photo = UIImage(named: recipe["id"] as! String)
+                let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
+                let directions = recipe["instructions"] as? Array<String>
+                
+                guard let entry = Recipe(name: recipeName, photo: photo, ingredients: ingredients, directions: directions) else {
+                    fatalError("Unable to instanstiate recipe")
+                }
+                
+                recipes += [entry]
+                
+            }
+            
+            self.recipes = recipes
+            self.tableView.reloadData()
+        })
+    }
+
 
 }
