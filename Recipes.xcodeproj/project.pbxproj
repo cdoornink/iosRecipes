@@ -23,6 +23,7 @@
 		C09A8AFE1FFC334200E3A810 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */; };
 		C09A8B001FFC339200E3A810 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFF1FFC339200E3A810 /* Podfile */; };
 		C09A8B021FFC37C500E3A810 /* Recipes.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */; };
+		C0F755881FFEE61B0083A97B /* IngredientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C09A8AFF1FFC339200E3A810 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = Recipes.xcworkspace; sourceTree = "<group>"; };
+		C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTableViewCell.swift; sourceTree = "<group>"; };
 		D6E2E45D014A515DD3D684EE /* Pods-RecipesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecipesTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RecipesTests/Pods-RecipesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E455CAFCA45009F192E1430E /* Pods_RecipesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RecipesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -124,6 +126,7 @@
 				C06045DC1FF6C64400FD35E9 /* Main.storyboard */,
 				C06045FA1FF6E85700FD35E9 /* RecipeTableViewController.swift */,
 				C08806C21FFD92B000198738 /* DirectionTableViewCell.swift */,
+				C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */,
 				C06045FC1FF6E8E800FD35E9 /* Recipe.swift */,
 				C06045DF1FF6C64400FD35E9 /* Assets.xcassets */,
 				C06045E11FF6C64400FD35E9 /* LaunchScreen.storyboard */,
@@ -374,6 +377,7 @@
 				C06045D71FF6C64400FD35E9 /* AppDelegate.swift in Sources */,
 				C08806C31FFD92B000198738 /* DirectionTableViewCell.swift in Sources */,
 				C06045D91FF6C64400FD35E9 /* RecipeViewController.swift in Sources */,
+				C0F755881FFEE61B0083A97B /* IngredientTableViewCell.swift in Sources */,
 				C06045FD1FF6E8E800FD35E9 /* Recipe.swift in Sources */,
 				C06045F91FF6E44500FD35E9 /* RecipeTableViewCell.swift in Sources */,
 				C06045FB1FF6E85700FD35E9 /* RecipeTableViewController.swift in Sources */,
