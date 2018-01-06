@@ -11,11 +11,14 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 
-class RecipeTableViewController: UITableViewController {
+class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
 
     // MARK: Properties
+    @IBOutlet weak var recipeSearchBar: UISearchBar!
     
     var recipes = [Recipe]()
+    var filteredRecipes = [Recipe]()
+    var filterTextValue = ""
     
     var ref: DatabaseReference!
     
@@ -26,6 +29,12 @@ class RecipeTableViewController: UITableViewController {
 //        loadSampleRecipes()
         self.loadRecipes()
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        recipeSearchBar.endEditing(true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -41,7 +50,7 @@ class RecipeTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return recipes.count
+        return filteredRecipes.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -51,48 +60,13 @@ class RecipeTableViewController: UITableViewController {
             fatalError("The dequeued cell is not an instance of RecipeTableViewCell.")
         }
     
-        let recipe = recipes[indexPath.row]
+        let recipe = filteredRecipes[indexPath.row]
 
         cell.recipeName.text = recipe.name
         cell.recipeImage.image = recipe.photo
         
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
 
     // MARK: - Navigation
@@ -115,29 +89,48 @@ class RecipeTableViewController: UITableViewController {
                 fatalError("The selected cell is not being displayed by the table")
             }
             
-            let selectedRecipe = recipes[indexPath.row]
+            let selectedRecipe = filteredRecipes[indexPath.row]
             recipeViewController.recipe = selectedRecipe
         }
     }
 
+    // MARK: Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.filterTextValue = searchText
+        self.filterRecipes()
+        
+    }
+
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.filterTextValue = ""
+        print("Cancel triggered")
+        self.filterRecipes()
+        searchBar.endEditing(true)
+    }
+    
+    
+    
+    
+
     
     // MARK: Private Methods
     
-    private func loadSampleRecipes() {
-        let photo1 = UIImage(named: "chicken-casserole")
-        let photo2 = UIImage(named: "golden-coconut-lentil-soup")
-
-        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["cook the damn thing"]) else {
-            fatalError("Unable to instanstiate recipe1")
-        }
-        
-        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["put them together"]) else {
-            fatalError("Unable to instanstiate recipe2")
-        }
-        
-        recipes += [recipe1, recipe2]
-        
-    }
+//    private func loadSampleRecipes() {
+//        let photo1 = UIImage(named: "chicken-casserole")
+//        let photo2 = UIImage(named: "golden-coconut-lentil-soup")
+//
+//        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["cook the damn thing"]) else {
+//            fatalError("Unable to instanstiate recipe1")
+//        }
+//
+//        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["put them together"]) else {
+//            fatalError("Unable to instanstiate recipe2")
+//        }
+//
+//        recipes += [recipe1, recipe2]
+//
+//    }
     
     private func loadRecipes() {
         
@@ -165,9 +158,25 @@ class RecipeTableViewController: UITableViewController {
                 
             }
             
-            self.recipes = recipes
-            self.tableView.reloadData()
+            self.recipes = recipes.sorted(by: {$0.name < $1.name})
+            self.filterRecipes()
         })
+    }
+    
+    private func filterRecipes() {
+        // get filter value
+        // search for hte valuje in each recipe title
+        if self.filterTextValue == "" {
+            self.filteredRecipes = self.recipes
+        } else {
+            self.filteredRecipes = self.recipes.filter({ (recipe: Recipe) -> Bool in
+                return recipe.name.lowercased().range(of: self.filterTextValue.lowercased()) != nil
+            })
+        }
+        
+        print(self.recipes.count, self.filteredRecipes.count)
+        
+        self.tableView.reloadData()
     }
 
 

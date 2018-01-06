@@ -21,15 +21,24 @@
         <scene sceneID="8dV-W9-fNI">
             <objects>
                 <tableViewController id="Kjb-Zw-guN" customClass="RecipeTableViewController" customModule="Recipes" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="215" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="349-sH-y97">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="215" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="349-sH-y97">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.96055084466934204" green="0.96463531255722046" blue="0.97279983758926392" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.96068006753921509" green="0.96084433794021606" blue="0.96066969633102417" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="0.88150004475249855" green="0.88150004475249855" blue="0.88150004475249855" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Filter recipes" id="vqp-hm-xnj">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <offsetWrapper key="searchTextPositionAdjustment" horizontal="0.0" vertical="0.0"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                            <connections>
+                                <outlet property="delegate" destination="Kjb-Zw-guN" id="5zF-wt-ROd"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="RecipeTableViewCell" rowHeight="215" id="kkw-b2-ZDj" customClass="RecipeTableViewCell" customModule="Recipes" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="215"/>
+                                <rect key="frame" x="0.0" y="84" width="375" height="215"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kkw-b2-ZDj" id="PIf-e8-DKY">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="215"/>
@@ -101,6 +110,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Recipes" largeTitleDisplayMode="never" id="hrd-Va-pEP"/>
+                    <connections>
+                        <outlet property="recipeSearchBar" destination="vqp-hm-xnj" id="93C-9P-DdY"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qXw-Mh-2IV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
