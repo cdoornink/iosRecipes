@@ -37,11 +37,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         recipeSearchBar.endEditing(true)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -95,16 +90,14 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     }
 
     // MARK: Search Bar
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.filterTextValue = searchText
         self.filterRecipes()
-        
     }
 
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.filterTextValue = ""
-        print("Cancel triggered")
         self.filterRecipes()
         searchBar.endEditing(true)
     }
@@ -149,8 +142,9 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
                 let photo = UIImage(named: recipe["id"] as! String)
                 let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
                 let directions = recipe["instructions"] as? Array<String>
+                let onShoppingList = recipe["onShoppingList"] as? Bool
                 
-                guard let entry = Recipe(name: recipeName, photo: photo, ingredients: ingredients, directions: directions) else {
+                guard let entry = Recipe(name: recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList) else {
                     fatalError("Unable to instanstiate recipe")
                 }
                 
@@ -164,8 +158,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     }
     
     private func filterRecipes() {
-        // get filter value
-        // search for hte valuje in each recipe title
         if self.filterTextValue == "" {
             self.filteredRecipes = self.recipes
         } else {
