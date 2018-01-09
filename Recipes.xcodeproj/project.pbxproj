@@ -22,6 +22,8 @@
 		C09A8AFE1FFC334200E3A810 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */; };
 		C09A8B001FFC339200E3A810 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFF1FFC339200E3A810 /* Podfile */; };
 		C09A8B021FFC37C500E3A810 /* Recipes.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */; };
+		C0D5FB902004207300A35A2A /* Aisle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D5FB8F2004207300A35A2A /* Aisle.swift */; };
+		C0D5FB92200439CA00A35A2A /* GroceryListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */; };
 		C0F755881FFEE61B0083A97B /* IngredientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */; };
 		C0F7558A200329990083A97B /* GroceryListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F75589200329990083A97B /* GroceryListTableViewController.swift */; };
 		C0F7558C2003F8940083A97B /* GroceryListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F7558B2003F8940083A97B /* GroceryListItem.swift */; };
@@ -60,6 +62,8 @@
 		C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C09A8AFF1FFC339200E3A810 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = Recipes.xcworkspace; sourceTree = "<group>"; };
+		C0D5FB8F2004207300A35A2A /* Aisle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aisle.swift; sourceTree = "<group>"; };
+		C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListTableViewCell.swift; sourceTree = "<group>"; };
 		C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTableViewCell.swift; sourceTree = "<group>"; };
 		C0F75589200329990083A97B /* GroceryListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListTableViewController.swift; sourceTree = "<group>"; };
 		C0F7558B2003F8940083A97B /* GroceryListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListItem.swift; sourceTree = "<group>"; };
@@ -127,6 +131,7 @@
 				C06045D81FF6C64400FD35E9 /* RecipeViewController.swift */,
 				C06045F81FF6E44500FD35E9 /* RecipeTableViewCell.swift */,
 				C06045DC1FF6C64400FD35E9 /* Main.storyboard */,
+				C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */,
 				C06045FA1FF6E85700FD35E9 /* RecipeTableViewController.swift */,
 				C08806C21FFD92B000198738 /* DirectionTableViewCell.swift */,
 				C0F755871FFEE61B0083A97B /* IngredientTableViewCell.swift */,
@@ -137,6 +142,7 @@
 				C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */,
 				C06045E41FF6C64400FD35E9 /* Info.plist */,
 				C0F75589200329990083A97B /* GroceryListTableViewController.swift */,
+				C0D5FB8F2004207300A35A2A /* Aisle.swift */,
 				C0F7558D2003FF1F0083A97B /* Constants.swift */,
 			);
 			path = Recipes;
@@ -383,8 +389,10 @@
 				C08806C31FFD92B000198738 /* DirectionTableViewCell.swift in Sources */,
 				C06045D91FF6C64400FD35E9 /* RecipeViewController.swift in Sources */,
 				C0F755881FFEE61B0083A97B /* IngredientTableViewCell.swift in Sources */,
+				C0D5FB902004207300A35A2A /* Aisle.swift in Sources */,
 				C06045FD1FF6E8E800FD35E9 /* Recipe.swift in Sources */,
 				C0F7558A200329990083A97B /* GroceryListTableViewController.swift in Sources */,
+				C0D5FB92200439CA00A35A2A /* GroceryListTableViewCell.swift in Sources */,
 				C0F7558E2003FF1F0083A97B /* Constants.swift in Sources */,
 				C06045F91FF6E44500FD35E9 /* RecipeTableViewCell.swift in Sources */,
 				C0F7558C2003F8940083A97B /* GroceryListItem.swift in Sources */,

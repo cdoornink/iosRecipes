@@ -18,7 +18,8 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     var recipes = [Recipe]()
     var filteredRecipes = [Recipe]()
-    var manuallyAddedItems = [GroceryListItem]()
+    var groceryListItems = [GroceryListItem]()
+    var organizedGroceryList = [Aisle]()
     var inputTextValue = ""
     
     var ref: DatabaseReference!
@@ -27,7 +28,7 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         super.viewDidLoad()
         
         loadRecipes()
-        loadManuallyAddedItems()
+        loadGroceryListItems()
 
         itemAddBar.setImage(UIImage(named: "add-to-cart-gray"), for: .search, state: .normal)
         
@@ -42,25 +43,41 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-//        return Constants.aisles
+        return organizedGroceryList.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
+        return organizedGroceryList[section].items!.count
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if organizedGroceryList[section].items!.count > 0 {
+            return 30
+        }
         return 0
     }
-
-    /*
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if organizedGroceryList[section].items!.count > 0 {
+            return organizedGroceryList[section].name
+        }
+        return ""
+    }
+    
+    
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListTableViewCell", for: indexPath) as? GroceryListTableViewCell else {
+            fatalError("The dequeued cell is not an instance of GroceryListTableViewCell.")
+        }
+        
+        let item = organizedGroceryList[indexPath.section].items![indexPath.row]
+        
+        cell.name.text = item.name
+        
         return cell
     }
-    */
+
 
     /*
     // Override to support conditional editing of the table view.
@@ -70,32 +87,19 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     }
     */
 
-    /*
+
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            // tableView.deleteRows(at: [indexPath], with: .fade)
+            let itemToRemove = organizedGroceryList[indexPath.section].items![indexPath.row]
+            
+            self.ref.child("shoppingList").child(itemToRemove.firebaseRef).removeValue()
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
     /*
     // MARK: - Navigation
@@ -119,6 +123,7 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     private func addItemToList(_ item: String) {
         print("add \(item) to the list")
+        self.ref.child("shoppingList").childByAutoId().setValue(["title": item])
     }
     
     private func loadRecipes() {
@@ -153,7 +158,16 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         })
     }
     
-    private func loadManuallyAddedItems() {
+    /*
+     loadGroceryListItems - Private Function
+    
+     Pulls the list of grocery list items from firebase and creates a new GroceryListItem class
+     for each item. This list should include both manually added items from the user as well as
+     items that are added when a user adds a recipe to the Grocery List. This should not have
+     to do any kind of de-duplication as that should be handled during the adding of items
+     rather than the displaying of them.
+    */
+    private func loadGroceryListItems() {
         
         ref = Database.database().reference()
         
@@ -169,9 +183,10 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
                 let name = item["title"] as! String
                 let recipes = item["recipes"] as? Array<String>
                 let inCart = item["inCart"] as? Bool
+                let firebaseRef = childSnapshot.key
                 
                 
-                guard let entry = GroceryListItem(name: name, recipes: recipes, inCart: inCart ?? false) else {
+                guard let entry = GroceryListItem(name: name, recipes: recipes, inCart: inCart ?? false, firebaseRef: firebaseRef) else {
                     fatalError("Unable to instanstiate GroceryListItem")
                 }
                 
@@ -179,10 +194,58 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
                 
             }
             
-            self.manuallyAddedItems = items
-//            self.organizeItems()
-            print(self.manuallyAddedItems)
+            self.groceryListItems = items
+            self.organizeItems()
+            print(self.groceryListItems)
         })
+    }
+    
+    /*
+     organizeItems - Private Function
+     
+     Takes the list of GroceryListItems and adds them to the correct aisle sections. Using the
+     FredMeyer.aisles list for the names and order of the aisles in the store, and
+     FredMeyere.aisleDesignations to match the items name to the aisle it belongs. This list is
+     built to take the first match in the list rather than the last, so loops must be exited
+     once a match is found.
+     */
+    private func organizeItems() {
+        let allItems = self.groceryListItems
+        
+        // Initialize empty shopping list organized by aisle
+        let organizedGroceryList = FredMeyer.aisles.map { (aisle: String) -> Aisle in
+            let name = aisle
+            let items = Array<GroceryListItem>()
+            
+            guard let aisle = Aisle(name: name, items: items) else {
+                fatalError("Unable to instanstiate GroceryListItem")
+            }
+            
+            return aisle
+        }
+        
+        allItems.forEach { (item) in
+            print(item.name)
+            
+            //loops through all the aisledesignation key value pairs until it finds a match
+            for designation in FredMeyer.aisleDesignations {
+                print(designation.word)
+                if item.name.lowercased().range(of: designation.word.lowercased()) != nil {
+                    print("there's a match for \(item.name) in \(designation.aisle)!!")
+                    // NEED TO EXIT THIS LOOP, WHICH IS IMPOSSIBLE, SO NEED TO WRITE THIS A DIFFERENT WAY
+                    
+                    // finds the right aisle instance to add the item into.
+                    if let aisle = organizedGroceryList.first(where: { $0.name == designation.aisle }) {
+                        aisle.items! += [item]
+                    }
+                    break
+                }
+            }
+        }
+        
+        self.organizedGroceryList = organizedGroceryList
+        
+        self.tableView.reloadData()
     }
     
     private func filterRecipes() {
@@ -191,8 +254,6 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         })
         
         print(self.recipes.count, self.filteredRecipes.count)
-        
-        self.tableView.reloadData()
     }
 
 }

@@ -1,5 +1,5 @@
 //
-//  GroceryListItem.swift
+//  Aisle.swift
 //  Recipes
 //
 //  Created by Chris Doornink on 1/8/18.
@@ -8,18 +8,16 @@
 
 import UIKit
 
-class GroceryListItem {
-    
+class Aisle {
+
     // MARK: Properties
     
     var name: String
-    var recipes: Array<String>?
-    var inCart: Bool
-    var firebaseRef: String
+    var items: Array<GroceryListItem>?
     
     // MARK: Initialization
     
-    init?(name: String, recipes: Array<String>?, inCart: Bool, firebaseRef: String) {
+    init?(name: String, items: Array<GroceryListItem>?) {
         
         if name.isEmpty {
             return nil
@@ -27,8 +25,6 @@ class GroceryListItem {
         
         // Initialize stored properties
         self.name = name
-        self.recipes = recipes
-        self.inCart = inCart
-        self.firebaseRef = firebaseRef
+        self.items = items
     }
 }
