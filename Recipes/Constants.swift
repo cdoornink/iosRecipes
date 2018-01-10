@@ -205,7 +205,7 @@ struct FredMeyer {
         Item(word: "oats", aisle: "cereal"),
         Item(word: "onion dip", aisle: "snacks"),
         Item(word: "onion", aisle: "produce"),
-        Item(word: "oranges", aisle: "produce"),
+        Item(word: "orange", aisle: "produce"),
         Item(word: "oregano", aisle: "baking"),
         Item(word: "orzo", aisle: "pasta"),
         Item(word: "pain", aisle: "medicine"),

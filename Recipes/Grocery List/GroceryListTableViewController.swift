@@ -27,8 +27,18 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadRecipes()
-        loadGroceryListItems()
+        ref = Database.database().reference()
+        
+        let recipesAPI = RecipesAPI()
+        recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
+            self.recipes = recipes
+            self.filterRecipes()
+        })
+        
+        recipesAPI.getGroceryListItems(callback: {(groceryListItems: Array<GroceryListItem>) -> Void in
+            self.groceryListItems = groceryListItems
+            self.organizeItems()
+        })
 
         itemAddBar.setImage(UIImage(named: "add-to-cart-gray"), for: .search, state: .normal)
         
@@ -59,7 +69,7 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if organizedGroceryList[section].items!.count > 0 {
-            return organizedGroceryList[section].name
+            return organizedGroceryList[section].name.uppercased()
         }
         return ""
     }
@@ -73,19 +83,15 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         
         let item = organizedGroceryList[indexPath.section].items![indexPath.row]
         
-        cell.name.text = item.name
+        cell.name.text = item.name.capitalizeFirstLetter()
+        cell.recipes.text = item.recipes?.joined(separator: ", ")
+        
+        if item.recipes?.count == 0 {
+            cell.nameTopConstraint.constant = 1
+        }
         
         return cell
     }
-
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
 
 
     // Override to support editing the table view.
@@ -114,91 +120,14 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     // MARK: Search Bar
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let newItem = searchBar.text {
-            self.addItemToList(newItem)
+//            self.addItemToList(newItem)
+            let api = RecipesAPI()
+            api.addItemToList(newItem, self.groceryListItems)
         }
         searchBar.text = ""
     }
     
     // MARK: Private Methods
-    
-    private func addItemToList(_ item: String) {
-        print("add \(item) to the list")
-        self.ref.child("shoppingList").childByAutoId().setValue(["title": item])
-    }
-    
-    private func loadRecipes() {
-        
-        ref = Database.database().reference()
-        
-        ref.child("recipes").observe(.value, with: { (snapshot) in
-            
-            var recipes = [Recipe]()
-            
-            for child in snapshot.children {
-                let childSnapshot = child as! DataSnapshot
-                
-                let recipe = childSnapshot.value as? [String : AnyObject] ?? [:]
-                
-                let recipeName = recipe["title"] as! String
-                let photo = UIImage(named: recipe["id"] as! String)
-                let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
-                let directions = recipe["instructions"] as? Array<String>
-                let onShoppingList = recipe["onShoppingList"] as? Bool
-                
-                guard let entry = Recipe(name: recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList) else {
-                    fatalError("Unable to instanstiate recipe")
-                }
-                
-                recipes += [entry]
-                
-            }
-            
-            self.recipes = recipes.sorted(by: {$0.name < $1.name})
-            self.filterRecipes()
-        })
-    }
-    
-    /*
-     loadGroceryListItems - Private Function
-    
-     Pulls the list of grocery list items from firebase and creates a new GroceryListItem class
-     for each item. This list should include both manually added items from the user as well as
-     items that are added when a user adds a recipe to the Grocery List. This should not have
-     to do any kind of de-duplication as that should be handled during the adding of items
-     rather than the displaying of them.
-    */
-    private func loadGroceryListItems() {
-        
-        ref = Database.database().reference()
-        
-        ref.child("shoppingList").observe(.value, with: { (snapshot) in
-            
-            var items = [GroceryListItem]()
-            
-            for child in snapshot.children {
-                let childSnapshot = child as! DataSnapshot
-                
-                let item = childSnapshot.value as? [String : AnyObject] ?? [:]
-                
-                let name = item["title"] as! String
-                let recipes = item["recipes"] as? Array<String>
-                let inCart = item["inCart"] as? Bool
-                let firebaseRef = childSnapshot.key
-                
-                
-                guard let entry = GroceryListItem(name: name, recipes: recipes, inCart: inCart ?? false, firebaseRef: firebaseRef) else {
-                    fatalError("Unable to instanstiate GroceryListItem")
-                }
-                
-                items += [entry]
-                
-            }
-            
-            self.groceryListItems = items
-            self.organizeItems()
-            print(self.groceryListItems)
-        })
-    }
     
     /*
      organizeItems - Private Function
@@ -225,22 +154,20 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         }
         
         allItems.forEach { (item) in
-            print(item.name)
-            
             //loops through all the aisledesignation key value pairs until it finds a match
+            var aisle = organizedGroceryList.first(where: { $0.name == "other" })
             for designation in FredMeyer.aisleDesignations {
-                print(designation.word)
                 if item.name.lowercased().range(of: designation.word.lowercased()) != nil {
-                    print("there's a match for \(item.name) in \(designation.aisle)!!")
-                    // NEED TO EXIT THIS LOOP, WHICH IS IMPOSSIBLE, SO NEED TO WRITE THIS A DIFFERENT WAY
-                    
                     // finds the right aisle instance to add the item into.
-                    if let aisle = organizedGroceryList.first(where: { $0.name == designation.aisle }) {
-                        aisle.items! += [item]
-                    }
+                    aisle = organizedGroceryList.first(where: { $0.name == designation.aisle })
                     break
                 }
             }
+            aisle!.items! += [item]
+        }
+        
+        organizedGroceryList.forEach { (aisle) in
+            aisle.items = aisle.items?.sorted(by: {$0.name.lowercased() < $1.name.lowercased()})
         }
         
         self.organizedGroceryList = organizedGroceryList

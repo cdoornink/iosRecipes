@@ -88,7 +88,6 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         if tableView == DirectionsTableView {
-            print("direction row")
             guard let directionCell = tableView.dequeueReusableCell(withIdentifier: "DirectionTableViewCell", for: indexPath) as? DirectionTableViewCell else {
                 fatalError("The dequeued cell is not an instance of DirectionTableViewCell.")
             }

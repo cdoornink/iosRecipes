@@ -11,6 +11,8 @@ import UIKit
 class GroceryListTableViewCell: UITableViewCell {
 
     @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var recipes: UILabel!
+    @IBOutlet weak var nameTopConstraint: NSLayoutConstraint!
     
     
     

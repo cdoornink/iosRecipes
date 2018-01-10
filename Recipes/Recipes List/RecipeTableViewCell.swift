@@ -14,7 +14,10 @@ class RecipeTableViewCell: UITableViewCell {
     @IBOutlet weak var recipeName: UILabel!
     @IBOutlet weak var recipeImage: UIImageView!
     @IBOutlet weak var imageContainerView: UIView!
+    @IBOutlet weak var addToCartButton: UIButton!
     
+    weak var recipe: Recipe?
+    var groceryListItems: [GroceryListItem] = []
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,5 +32,13 @@ class RecipeTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    
+    @IBAction func addToCartButtonClick(_ sender: Any) {
+        let api = RecipesAPI()
+        
+        api.addRecipeToList(recipe!, groceryListItems)
 
+    }
+    
 }

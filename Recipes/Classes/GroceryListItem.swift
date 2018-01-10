@@ -14,12 +14,13 @@ class GroceryListItem {
     
     var name: String
     var recipes: Array<String>?
+    var manuallyAdded: Bool
     var inCart: Bool
     var firebaseRef: String
     
     // MARK: Initialization
     
-    init?(name: String, recipes: Array<String>?, inCart: Bool, firebaseRef: String) {
+    init?(name: String, recipes: Array<String>?, manuallyAdded: Bool, inCart: Bool, firebaseRef: String) {
         
         if name.isEmpty {
             return nil
@@ -28,6 +29,7 @@ class GroceryListItem {
         // Initialize stored properties
         self.name = name
         self.recipes = recipes
+        self.manuallyAdded = manuallyAdded
         self.inCart = inCart
         self.firebaseRef = firebaseRef
     }

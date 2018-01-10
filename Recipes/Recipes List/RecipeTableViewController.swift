@@ -19,6 +19,7 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     var recipes = [Recipe]()
     var filteredRecipes = [Recipe]()
     var filterTextValue = ""
+    var groceryListItems = [GroceryListItem]()
     
     var ref: DatabaseReference!
     
@@ -27,7 +28,17 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
 
 //        loadSampleRecipes()
-        self.loadRecipes()
+//        self.loadRecipes()
+        let recipesAPI = RecipesAPI()
+        
+        recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
+            self.recipes = recipes
+            self.filterRecipes()
+        })
+        
+        recipesAPI.getGroceryListItems(callback: {(groceryListItems: Array<GroceryListItem>) -> Void in
+            self.groceryListItems = groceryListItems
+        })
         
     }
     
@@ -48,8 +59,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath)
-
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as? RecipeTableViewCell else {
             fatalError("The dequeued cell is not an instance of RecipeTableViewCell.")
         }
@@ -58,6 +67,8 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
 
         cell.recipeName.text = recipe.name
         cell.recipeImage.image = recipe.photo
+        cell.recipe = recipe
+        cell.groceryListItems = self.groceryListItems
         
         return cell
     }
@@ -124,37 +135,7 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
 //
 //    }
     
-    private func loadRecipes() {
-        
-        ref = Database.database().reference()
-        
-        ref.child("recipes").observe(.value, with: { (snapshot) in
-            
-            var recipes = [Recipe]()
-            
-            for child in snapshot.children {
-                let childSnapshot = child as! DataSnapshot
-                
-                let recipe = childSnapshot.value as? [String : AnyObject] ?? [:]
-                
-                let recipeName = recipe["title"] as! String
-                let photo = UIImage(named: recipe["id"] as! String)
-                let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
-                let directions = recipe["instructions"] as? Array<String>
-                let onShoppingList = recipe["onShoppingList"] as? Bool
-                
-                guard let entry = Recipe(name: recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList) else {
-                    fatalError("Unable to instanstiate recipe")
-                }
-                
-                recipes += [entry]
-                
-            }
-            
-            self.recipes = recipes.sorted(by: {$0.name < $1.name})
-            self.filterRecipes()
-        })
-    }
+    
     
     private func filterRecipes() {
         if self.filterTextValue == "" {

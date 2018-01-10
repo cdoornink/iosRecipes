@@ -13,14 +13,16 @@ class Recipe {
     // MARK: Properties
     
     var name: String
+    var shortName: String
     var photo: UIImage?
     var ingredients: Array<Dictionary<String, Any>>?
     var directions: Array<String>?
     var onShoppingList: Bool?
+    var firebaseRef: String
     
     // MARK: Initialization
     
-    init?(name: String, photo: UIImage?, ingredients: Array<Dictionary<String, Any>>?, directions: Array<String>?, onShoppingList: Bool?) {
+    init?(name: String, shortName: String, photo: UIImage?, ingredients: Array<Dictionary<String, Any>>?, directions: Array<String>?, onShoppingList: Bool?, firebaseRef: String) {
         
         if name.isEmpty {
             return nil
@@ -28,9 +30,11 @@ class Recipe {
         
         // Initialize stored properties
         self.name = name
+        self.shortName = shortName
         self.photo = photo
         self.ingredients = ingredients
         self.directions = directions
         self.onShoppingList = onShoppingList ?? false
+        self.firebaseRef = firebaseRef
     }
 }
