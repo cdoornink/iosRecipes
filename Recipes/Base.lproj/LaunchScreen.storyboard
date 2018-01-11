@@ -26,7 +26,7 @@
                         <constraints>
                             <constraint firstItem="eKu-3A-DON" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="PbJ-FH-pad"/>
                             <constraint firstItem="eKu-3A-DON" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="jiC-CZ-lRx"/>
-                            <constraint firstItem="eKu-3A-DON" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="rrr-ql-cbn"/>
+                            <constraint firstItem="eKu-3A-DON" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="-1" id="rrr-ql-cbn"/>
                             <constraint firstItem="eKu-3A-DON" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="vgv-rC-jLS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

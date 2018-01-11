@@ -74,8 +74,6 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         return ""
     }
     
-    
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListTableViewCell", for: indexPath) as? GroceryListTableViewCell else {
             fatalError("The dequeued cell is not an instance of GroceryListTableViewCell.")
@@ -88,11 +86,27 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         
         if item.recipes?.count == 0 {
             cell.nameTopConstraint.constant = 1
+        } else {
+            cell.nameTopConstraint.constant = -6
         }
+        
+        // Handles the strikethrough styling if an item is marked as in the (literal) shopping cart
+        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: cell.name.text!)
+        
+        if item.inCart == true {
+            cell.name.textColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.3)
+            cell.recipes.textColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.2)
+            attributeString.addAttribute(NSAttributedStringKey.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
+            attributeString.addAttribute(NSAttributedStringKey.strikethroughColor, value: UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.3), range: NSMakeRange(0, attributeString.length))
+        } else {
+            cell.name.textColor = UIColor.black
+            cell.recipes.textColor = UIColor.gray
+            attributeString.removeAttribute(.strikethroughStyle, range: NSMakeRange(0, attributeString.length))
+        }
+        cell.name.attributedText = attributeString
         
         return cell
     }
-
 
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -101,10 +115,22 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
             // tableView.deleteRows(at: [indexPath], with: .fade)
             let itemToRemove = organizedGroceryList[indexPath.section].items![indexPath.row]
             
-            self.ref.child("shoppingList").child(itemToRemove.firebaseRef).removeValue()
+            let api = RecipesAPI()
+            api.removeItemFromList(itemToRemove)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
+    }
+    
+    // Override tapping of the item table cell to mark as (inCart / not inCart)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let tappedItem = organizedGroceryList[indexPath.section].items![indexPath.row]
+        
+        tappedItem.inCart = !tappedItem.inCart
+        
+//        tableView.reloadData()
+        let api = RecipesAPI()
+        api.updateGroceryListItem(tappedItem)
     }
 
     /*
@@ -120,11 +146,20 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     // MARK: Search Bar
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let newItem = searchBar.text {
-//            self.addItemToList(newItem)
             let api = RecipesAPI()
             api.addItemToList(newItem, self.groceryListItems)
         }
         searchBar.text = ""
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.endEditing(true)
+        searchBar.showsCancelButton = false
     }
     
     // MARK: Private Methods

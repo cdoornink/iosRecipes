@@ -28,7 +28,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
 
 //        loadSampleRecipes()
-//        self.loadRecipes()
         let recipesAPI = RecipesAPI()
         
         recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
@@ -38,6 +37,7 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         
         recipesAPI.getGroceryListItems(callback: {(groceryListItems: Array<GroceryListItem>) -> Void in
             self.groceryListItems = groceryListItems
+            self.tableView.reloadData()
         })
         
     }
@@ -69,6 +69,17 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         cell.recipeImage.image = recipe.photo
         cell.recipe = recipe
         cell.groceryListItems = self.groceryListItems
+        
+        if (recipe.onShoppingList == true) {
+            let origImage = UIImage(named: "shopping-list")
+            let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
+            cell.addToCartButton.setImage(tintedImage, for: .normal)
+            cell.addToCartButton.tintColor = UIColor(red:0.00, green:0.56, blue:0.03, alpha:1.0)
+        } else {
+            cell.addToCartButton.setImage(UIImage(named: "add-to-cart"), for: .normal)
+        }
+        
+        
         
         return cell
     }
@@ -107,15 +118,21 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.filterTextValue = ""
-        self.filterRecipes()
         searchBar.endEditing(true)
+        searchBar.showsCancelButton = false
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
     
-    
-    
-
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.filterTextValue = ""
+        self.filterRecipes()
+        searchBar.text = ""
+        searchBar.endEditing(true)
+        searchBar.showsCancelButton = false
+    }
     
     // MARK: Private Methods
     
@@ -135,8 +152,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
 //
 //    }
     
-    
-    
     private func filterRecipes() {
         if self.filterTextValue == "" {
             self.filteredRecipes = self.recipes
@@ -150,6 +165,5 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         
         self.tableView.reloadData()
     }
-
 
 }

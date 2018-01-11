@@ -17,7 +17,6 @@ struct RecipesAPI {
         var ref: DatabaseReference!
         
         ref = Database.database().reference()
-        
         ref.child("recipes").observe(.value, with: { (snapshot) in
             
             var recipes = [Recipe]()
@@ -48,7 +47,7 @@ struct RecipesAPI {
     }
     
     /*
-     loadGroceryListItems - Private Function
+     loadGroceryListItems
      
      Pulls the list of grocery list items from firebase and creates a new GroceryListItem class
      for each item. This list should include both manually added items from the user as well as
@@ -58,7 +57,6 @@ struct RecipesAPI {
      */
     func getGroceryListItems(callback: @escaping (Array<GroceryListItem>) -> ()) {
         var ref: DatabaseReference!
-        
         ref = Database.database().reference()
         
         ref.child("shoppingList").observe(.value, with: { (snapshot) in
@@ -69,15 +67,15 @@ struct RecipesAPI {
                 let childSnapshot = child as! DataSnapshot
                 
                 let item = childSnapshot.value as? [String : AnyObject] ?? [:]
-                
+
                 let name = item["title"] as! String
                 let recipes = item["recipes"] as? Array<String> ?? []
-                let manuallyAdded = item["manuallyAdded"] as? Bool
+                let manuallyAdded = item["manuallyAdded"] as? Int == 1
                 let inCart = item["inCart"] as? Bool
                 let firebaseRef = childSnapshot.key
                 
                 
-                guard let entry = GroceryListItem(name: name, recipes: recipes, manuallyAdded: manuallyAdded ?? false, inCart: inCart ?? false, firebaseRef: firebaseRef) else {
+                guard let entry = GroceryListItem(name: name, recipes: recipes, manuallyAdded: manuallyAdded, inCart: inCart ?? false, firebaseRef: firebaseRef) else {
                     fatalError("Unable to instanstiate GroceryListItem")
                 }
                 
@@ -96,9 +94,7 @@ struct RecipesAPI {
      recipe and allow for removal from the Grocery List.
      */
     func addRecipeToList(_ recipe: Recipe, _ groceryListItems: Array<GroceryListItem>) {
-        print("add \(recipe.name) to the list")
         let ingredients = recipe.ingredients?.filter({ (ingredient) -> Bool in
-            
             return ingredient["list"] as? Int == 1
         })
         
@@ -107,7 +103,6 @@ struct RecipesAPI {
         })
         
         var ref: DatabaseReference!
-
         ref = Database.database().reference()
 
         ref.child("recipes").child(recipe.firebaseRef).child("onShoppingList").setValue(true)
@@ -121,13 +116,11 @@ struct RecipesAPI {
      item is part of a recipe.
      */
     func addItemToList(_ item: String, _ groceryListItems: Array<GroceryListItem>, _ recipe: Recipe? = nil) {
-        print("add \(item) to the list")
         if item.count < 2 {
             return
         }
         
         var ref: DatabaseReference!
-        
         ref = Database.database().reference()
         
         var pluralMatch = false
@@ -166,13 +159,14 @@ struct RecipesAPI {
             return duplicateFound
         }
         
-        if duplicates.count == 0 {
+        if duplicateFound == false {
             if recipe != nil {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "recipes": [recipe?.shortName]])
             } else {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "manuallyAdded": true])
             }
         } else {
+            print("duplicate found!")
             let duplicate = duplicates[0]
             
             if recipe != nil {
@@ -199,6 +193,51 @@ struct RecipesAPI {
         }
     }
     
+    func removeRecipeFromList(_ recipe: Recipe, _ groceryListItems: Array<GroceryListItem>) {
+        print("remove \(recipe.name) from the list")
+        let items = groceryListItems.filter({ (item) -> Bool in
+            return item.recipes?.contains(recipe.shortName) == true
+        })
+        
+        items.forEach({ (item) in
+            self.removeItemFromList(item, recipe)
+        })
+        
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        ref.child("recipes").child(recipe.firebaseRef).child("onShoppingList").setValue(false)
+    }
+    
+    func removeItemFromList(_ item: GroceryListItem, _ recipe: Recipe? = nil) {
+        print("remove \(item.name) from list")
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        if recipe != nil && (item.recipes?.count != 1 || item.manuallyAdded == true) {
+            //remove the recipe reference from the item
+            let newRecipesArray = item.recipes?.filter({ (shortName) -> Bool in
+                return shortName != recipe?.shortName
+            })
+            ref.child("shoppingList").child(item.firebaseRef).child("recipes").setValue(newRecipesArray)
+        } else {
+            //remove the item
+            ref.child("shoppingList").child(item.firebaseRef).removeValue()
+        }
+    }
+    
+    func updateGroceryListItem(_ item: GroceryListItem) {
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        ref.child("shoppingList").child(item.firebaseRef).setValue([
+            "title": item.name,
+            "recipes": item.recipes ?? [],
+            "manuallyAdded": item.manuallyAdded,
+            "inCart": item.inCart
+        ])
+        
+    }
 
 }
 

@@ -37,7 +37,11 @@ class RecipeTableViewCell: UITableViewCell {
     @IBAction func addToCartButtonClick(_ sender: Any) {
         let api = RecipesAPI()
         
-        api.addRecipeToList(recipe!, groceryListItems)
+        if (recipe?.onShoppingList == true) {
+            api.removeRecipeFromList(recipe!, groceryListItems)
+        } else {
+            api.addRecipeToList(recipe!, groceryListItems)
+        }
 
     }
     
