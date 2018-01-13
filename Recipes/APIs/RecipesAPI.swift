@@ -26,21 +26,23 @@ struct RecipesAPI {
                 
                 let recipe = childSnapshot.value as? [String : AnyObject] ?? [:]
                 
-                let recipeName = recipe["title"] as! String
-                let shortName = recipe["short"] as? String
-                let photo = UIImage(named: recipe["id"] as! String)
-                let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
-                let directions = recipe["instructions"] as? Array<String>
-                let onShoppingList = recipe["onShoppingList"] as? Bool
-                let onMenu = recipe["onMenu"] as? Bool
-                let isCooked = recipe["isCooked"] as? Bool
-                let firebaseRef = childSnapshot.key
-                
-                guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, onMenu: onMenu, isCooked: isCooked,  firebaseRef: firebaseRef) else {
-                    fatalError("Unable to instanstiate recipe")
+                if recipe["retired"] as? Int != 1 {
+                    let recipeName = recipe["title"] as! String
+                    let shortName = recipe["short"] as? String
+                    let photo = UIImage(named: recipe["id"] as! String)
+                    let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
+                    let directions = recipe["instructions"] as? Array<String>
+                    let onShoppingList = recipe["onShoppingList"] as? Bool
+                    let onMenu = recipe["onMenu"] as? Bool
+                    let isCooked = recipe["isCooked"] as? Bool
+                    let firebaseRef = childSnapshot.key
+                    
+                    guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, onMenu: onMenu, isCooked: isCooked,  firebaseRef: firebaseRef) else {
+                        fatalError("Unable to instanstiate recipe")
+                    }
+                    
+                    recipes += [entry]
                 }
-                
-                recipes += [entry]
                 
             }
             recipes = recipes.sorted(by: {$0.name < $1.name})
