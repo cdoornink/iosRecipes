@@ -32,9 +32,11 @@ struct RecipesAPI {
                 let ingredients = recipe["ingredients"] as? Array<Dictionary<String, Any>>
                 let directions = recipe["instructions"] as? Array<String>
                 let onShoppingList = recipe["onShoppingList"] as? Bool
+                let onMenu = recipe["onMenu"] as? Bool
+                let isCooked = recipe["isCooked"] as? Bool
                 let firebaseRef = childSnapshot.key
                 
-                guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, firebaseRef: firebaseRef) else {
+                guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, onMenu: onMenu, isCooked: isCooked,  firebaseRef: firebaseRef) else {
                     fatalError("Unable to instanstiate recipe")
                 }
                 
@@ -237,6 +239,33 @@ struct RecipesAPI {
             "inCart": item.inCart
         ])
         
+    }
+    
+    func clearShoppingListAndReplaceMenu(_ recipes: Array<Recipe>) {
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        ref.child("shoppingList").removeValue()
+        print(recipes)
+        recipes.forEach { (recipe) in
+            if recipe.onMenu == true {
+                ref.child("recipes").child(recipe.firebaseRef).child("onMenu").setValue(false)
+            }
+            if recipe.isCooked == true {
+                ref.child("recipes").child(recipe.firebaseRef).child("isCooked").setValue(false)
+            }
+            if recipe.onShoppingList == true {
+                ref.child("recipes").child(recipe.firebaseRef).child("onMenu").setValue(true)
+                ref.child("recipes").child(recipe.firebaseRef).child("onShoppingList").setValue(false)
+            }
+        }
+    }
+    
+    func toggleRecipeIsCooked(_ recipe: Recipe) {
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        ref.child("recipes").child(recipe.firebaseRef).child("isCooked").setValue(!recipe.isCooked!)
     }
 
 }

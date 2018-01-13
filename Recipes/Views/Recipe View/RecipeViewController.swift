@@ -35,7 +35,9 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        gradient.colors = [UIColor.clear.cgColor, UIColor.white.cgColor]
 //        gradient.locations = [0.5, 1.0]
 //        recipeImage.layer.insertSublayer(gradient, at: 0)
+        
     }
+
     
     // MARK: - Table view data source
     
@@ -82,7 +84,7 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
             
             
-            ingredientTableHeightConstraint.constant = tableView.contentSize.height
+            ingredientTableHeightConstraint.constant = tableView.contentSize.height + 50
             
             cell = ingredientCell
         }

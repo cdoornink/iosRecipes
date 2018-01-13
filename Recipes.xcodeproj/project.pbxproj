@@ -23,6 +23,11 @@
 		C09A8AFE1FFC334200E3A810 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */; };
 		C09A8B001FFC339200E3A810 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = C09A8AFF1FFC339200E3A810 /* Podfile */; };
 		C09A8B021FFC37C500E3A810 /* Recipes.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */; };
+		C0A9800A20082C65003133BC /* GroceryListMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A9800920082C65003133BC /* GroceryListMenuTableViewController.swift */; };
+		C0A9800C20082C83003133BC /* GroceryListMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A9800B20082C83003133BC /* GroceryListMenuTableViewCell.swift */; };
+		C0A9800E20092B34003133BC /* GroceryListCompletedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A9800D20092B34003133BC /* GroceryListCompletedTableViewCell.swift */; };
+		C0A98011200986CC003133BC /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A98010200986CC003133BC /* MenuTableViewController.swift */; };
+		C0A98013200986DE003133BC /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A98012200986DE003133BC /* MenuTableViewCell.swift */; };
 		C0D5FB902004207300A35A2A /* Aisle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D5FB8F2004207300A35A2A /* Aisle.swift */; };
 		C0D5FB92200439CA00A35A2A /* GroceryListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */; };
 		C0D5FB99200554BE00A35A2A /* RecipesAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D5FB98200554BE00A35A2A /* RecipesAPI.swift */; };
@@ -65,6 +70,11 @@
 		C09A8AFD1FFC334200E3A810 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C09A8AFF1FFC339200E3A810 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		C09A8B011FFC37C500E3A810 /* Recipes.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = Recipes.xcworkspace; sourceTree = "<group>"; };
+		C0A9800920082C65003133BC /* GroceryListMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListMenuTableViewController.swift; sourceTree = "<group>"; };
+		C0A9800B20082C83003133BC /* GroceryListMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListMenuTableViewCell.swift; sourceTree = "<group>"; };
+		C0A9800D20092B34003133BC /* GroceryListCompletedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListCompletedTableViewCell.swift; sourceTree = "<group>"; };
+		C0A98010200986CC003133BC /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
+		C0A98012200986DE003133BC /* MenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
 		C0D5FB8F2004207300A35A2A /* Aisle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aisle.swift; sourceTree = "<group>"; };
 		C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListTableViewCell.swift; sourceTree = "<group>"; };
 		C0D5FB98200554BE00A35A2A /* RecipesAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesAPI.swift; sourceTree = "<group>"; };
@@ -126,6 +136,7 @@
 		C041BB1C2006CFD8005C6E6E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C0A9800F200986A2003133BC /* Menu */,
 				C0D5FB942005531600A35A2A /* Grocery List */,
 				C0D5FB962005532F00A35A2A /* Recipe View */,
 				C0D5FB952005532400A35A2A /* Recipes List */,
@@ -181,6 +192,24 @@
 			path = RecipesTests;
 			sourceTree = "<group>";
 		};
+		C0A98004200826D5003133BC /* Menu Collection */ = {
+			isa = PBXGroup;
+			children = (
+				C0A9800920082C65003133BC /* GroceryListMenuTableViewController.swift */,
+				C0A9800B20082C83003133BC /* GroceryListMenuTableViewCell.swift */,
+			);
+			path = "Menu Collection";
+			sourceTree = "<group>";
+		};
+		C0A9800F200986A2003133BC /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				C0A98010200986CC003133BC /* MenuTableViewController.swift */,
+				C0A98012200986DE003133BC /* MenuTableViewCell.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
 		C0D5FB932005514700A35A2A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +223,8 @@
 		C0D5FB942005531600A35A2A /* Grocery List */ = {
 			isa = PBXGroup;
 			children = (
+				C0A98004200826D5003133BC /* Menu Collection */,
+				C0A9800D20092B34003133BC /* GroceryListCompletedTableViewCell.swift */,
 				C0F75589200329990083A97B /* GroceryListTableViewController.swift */,
 				C0D5FB91200439CA00A35A2A /* GroceryListTableViewCell.swift */,
 			);
@@ -460,12 +491,17 @@
 				C06045D91FF6C64400FD35E9 /* RecipeViewController.swift in Sources */,
 				C0F755881FFEE61B0083A97B /* IngredientTableViewCell.swift in Sources */,
 				C041BB1A2006AE8C005C6E6E /* String.swift in Sources */,
+				C0A9800E20092B34003133BC /* GroceryListCompletedTableViewCell.swift in Sources */,
 				C0D5FB902004207300A35A2A /* Aisle.swift in Sources */,
 				C06045FD1FF6E8E800FD35E9 /* Recipe.swift in Sources */,
 				C0F7558A200329990083A97B /* GroceryListTableViewController.swift in Sources */,
 				C0D5FB92200439CA00A35A2A /* GroceryListTableViewCell.swift in Sources */,
 				C0F7558E2003FF1F0083A97B /* Aisles.swift in Sources */,
+				C0A9800A20082C65003133BC /* GroceryListMenuTableViewController.swift in Sources */,
+				C0A98013200986DE003133BC /* MenuTableViewCell.swift in Sources */,
 				C0D5FB99200554BE00A35A2A /* RecipesAPI.swift in Sources */,
+				C0A9800C20082C83003133BC /* GroceryListMenuTableViewCell.swift in Sources */,
+				C0A98011200986CC003133BC /* MenuTableViewController.swift in Sources */,
 				C06045F91FF6E44500FD35E9 /* RecipeTableViewCell.swift in Sources */,
 				C0F7558C2003F8940083A97B /* GroceryListItem.swift in Sources */,
 				C06045FB1FF6E85700FD35E9 /* RecipeTableViewController.swift in Sources */,

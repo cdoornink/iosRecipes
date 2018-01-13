@@ -44,6 +44,11 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -53,21 +58,36 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return organizedGroceryList.count
+        return organizedGroceryList.count + 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if organizedGroceryList.count == section {
+            return 1
+        }
         return organizedGroceryList[section].items!.count
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if organizedGroceryList[section].items!.count > 0 {
+        if organizedGroceryList.count == section {
+            return 0
+        } else if organizedGroceryList[section].items!.count > 0 {
             return 30
         }
         return 0
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if organizedGroceryList.count == indexPath.section {
+            return 100
+        }
+        return 38
+    }
+    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if organizedGroceryList.count == section {
+            return ""
+        }
         if organizedGroceryList[section].items!.count > 0 {
             return organizedGroceryList[section].name.uppercased()
         }
@@ -75,6 +95,16 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if organizedGroceryList.count == indexPath.section {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListCompletedTableViewCell", for: indexPath) as? GroceryListCompletedTableViewCell else {
+                fatalError("The dequeued cell is not an instance of GroceryListCompletedTableViewCell.")
+            }
+            
+            cell.recipes = self.recipes
+            
+            return cell
+        }
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListTableViewCell", for: indexPath) as? GroceryListTableViewCell else {
             fatalError("The dequeued cell is not an instance of GroceryListTableViewCell.")
         }
@@ -83,6 +113,8 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         
         cell.name.text = item.name.capitalizeFirstLetter()
         cell.recipes.text = item.recipes?.joined(separator: ", ")
+        
+        
         
         if item.recipes?.count == 0 {
             cell.nameTopConstraint.constant = 1
@@ -124,6 +156,10 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     // Override tapping of the item table cell to mark as (inCart / not inCart)
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if organizedGroceryList.count == indexPath.section {
+            return
+        }
+        
         let tappedItem = organizedGroceryList[indexPath.section].items![indexPath.row]
         
         tappedItem.inCart = !tappedItem.inCart

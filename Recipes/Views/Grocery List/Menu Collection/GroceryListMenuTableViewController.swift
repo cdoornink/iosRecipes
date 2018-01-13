@@ -1,9 +1,9 @@
 //
-//  RecipeTableViewController.swift
+//  GroceryListMenuTableViewController.swift
 //  Recipes
 //
-//  Created by Chris Doornink on 12/29/17.
-//  Copyright © 2017 Chris Doornink. All rights reserved.
+//  Created by Chris Doornink on 1/11/18.
+//  Copyright © 2018 Chris Doornink. All rights reserved.
 //
 
 import UIKit
@@ -11,14 +11,10 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 
-class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
-
-    // MARK: Properties
-    @IBOutlet weak var recipeSearchBar: UISearchBar!
+class GroceryListMenuTableViewController: UITableViewController {
     
     var recipes = [Recipe]()
     var filteredRecipes = [Recipe]()
-    var filterTextValue = ""
     var groceryListItems = [GroceryListItem]()
     
     var ref: DatabaseReference!
@@ -26,8 +22,7 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        loadSampleRecipes()
+        
         let recipesAPI = RecipesAPI()
         
         recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
@@ -40,34 +35,26 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
             self.tableView.reloadData()
         })
         
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        recipeSearchBar.endEditing(true)
-    }
-
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredRecipes.count
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as? RecipeTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListMenuTableViewCell", for: indexPath) as? GroceryListMenuTableViewCell else {
             fatalError("The dequeued cell is not an instance of RecipeTableViewCell.")
         }
-    
+        
         let recipe = filteredRecipes[indexPath.row]
-
-        cell.recipeName.text = recipe.name
+        
+        cell.name.text = recipe.name
         cell.recipeImage.image = recipe.photo
         cell.recipe = recipe
         cell.groceryListItems = self.groceryListItems
@@ -81,14 +68,12 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
             cell.addToCartButton.setImage(UIImage(named: "add-to-cart"), for: .normal)
         }
         
-        
-        
         return cell
     }
-
-
+    
+    
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
@@ -99,7 +84,7 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            guard let selectedCell = sender as? RecipeTableViewCell else {
+            guard let selectedCell = sender as? GroceryListMenuTableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             
@@ -111,61 +96,14 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
             recipeViewController.recipe = selectedRecipe
         }
     }
-
-    // MARK: Search Bar
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.filterTextValue = searchText
-        self.filterRecipes()
-    }
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.endEditing(true)
-        searchBar.showsCancelButton = false
-    }
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = true
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.filterTextValue = ""
-        self.filterRecipes()
-        searchBar.text = ""
-        searchBar.endEditing(true)
-        searchBar.showsCancelButton = false
-    }
     
     // MARK: Private Methods
     
-//    private func loadSampleRecipes() {
-//        let photo1 = UIImage(named: "chicken-casserole")
-//        let photo2 = UIImage(named: "golden-coconut-lentil-soup")
-//
-//        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["cook the damn thing"]) else {
-//            fatalError("Unable to instanstiate recipe1")
-//        }
-//
-//        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["put them together"]) else {
-//            fatalError("Unable to instanstiate recipe2")
-//        }
-//
-//        recipes += [recipe1, recipe2]
-//
-//    }
-    
     private func filterRecipes() {
-        if self.filterTextValue == "" {
-            self.filteredRecipes = self.recipes
-        } else {
-            self.filteredRecipes = self.recipes.filter({ (recipe: Recipe) -> Bool in
-                return recipe.name.lowercased().range(of: self.filterTextValue.lowercased()) != nil
-            })
-        }
-        
-        print(self.recipes.count, self.filteredRecipes.count)
+        self.filteredRecipes = self.recipes.filter({ (recipe: Recipe) -> Bool in
+            return recipe.onShoppingList == true
+        })
         
         self.tableView.reloadData()
     }
-
 }
