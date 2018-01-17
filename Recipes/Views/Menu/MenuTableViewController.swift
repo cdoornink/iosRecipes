@@ -30,6 +30,8 @@ class MenuTableViewController: UITableViewController {
             self.organizeRecipes()
         })
         
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        
     }
     
     // MARK: - Table view data source
@@ -54,7 +56,7 @@ class MenuTableViewController: UITableViewController {
             return "Ready to cook"
         }
         
-        return "Already ingested"
+        return "Finished"
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -68,13 +70,17 @@ class MenuTableViewController: UITableViewController {
         cell.recipeImage.image = recipe.photo
         cell.recipe = recipe
         
-        let origImage = UIImage(named: "fork-and-knife")
-        let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
-        cell.isCookedButton.setImage(tintedImage, for: .normal)
         if (recipe.isCooked == true) {
-            cell.isCookedButton.tintColor = UIColor(red:0.00, green:0.56, blue:0.03, alpha:1.0)
+            let origImage = UIImage(named: "check")
+            let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
+            cell.isCookedButton.setImage(tintedImage, for: .normal)
+            cell.isCookedButton.tintColor = UIColor.lightGray
+            
         } else {
-            cell.isCookedButton.tintColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.5)
+            let origImage = UIImage(named: "fork-and-knife")
+            let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
+            cell.isCookedButton.setImage(tintedImage, for: .normal)
+            cell.isCookedButton.tintColor = Colors.blue
         }
         
         return cell

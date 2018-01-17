@@ -23,11 +23,11 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     
     var ref: DatabaseReference!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.setContentOffset( CGPoint(x: 0, y: 50) , animated: true)
 
-//        loadSampleRecipes()
         let recipesAPI = RecipesAPI()
         
         recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
@@ -76,9 +76,12 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
             let origImage = UIImage(named: "shopping-list")
             let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
             cell.addToCartButton.setImage(tintedImage, for: .normal)
-            cell.addToCartButton.tintColor = UIColor(red:0.00, green:0.56, blue:0.03, alpha:1.0)
+            cell.addToCartButton.tintColor = Colors.blue
         } else {
-            cell.addToCartButton.setImage(UIImage(named: "add-to-cart"), for: .normal)
+            let origImage = UIImage(named: "add-to-cart")
+            let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
+            cell.addToCartButton.setImage(tintedImage, for: .normal)
+            cell.addToCartButton.tintColor = Colors.darkBlue
         }
         
         
@@ -137,22 +140,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
     }
     
     // MARK: Private Methods
-    
-//    private func loadSampleRecipes() {
-//        let photo1 = UIImage(named: "chicken-casserole")
-//        let photo2 = UIImage(named: "golden-coconut-lentil-soup")
-//
-//        guard let recipe1 = Recipe(name: "Something yummy with Chicken", photo: photo1, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["cook the damn thing"]) else {
-//            fatalError("Unable to instanstiate recipe1")
-//        }
-//
-//        guard let recipe2 = Recipe(name: "Pork Sammy", photo: photo2, ingredients: [["name":"pasta", "amount": "1 tsp"], ["name":"chicken"]], directions: ["put them together"]) else {
-//            fatalError("Unable to instanstiate recipe2")
-//        }
-//
-//        recipes += [recipe1, recipe2]
-//
-//    }
     
     private func filterRecipes() {
         if self.filterTextValue == "" {

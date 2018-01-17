@@ -79,7 +79,10 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if organizedGroceryList.count == indexPath.section {
-            return 100
+            if (groceryListItems.count > 0) {
+                return 100
+            }
+            return 0
         }
         return 38
     }

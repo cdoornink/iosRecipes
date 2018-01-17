@@ -1,4 +1,4 @@
-platform :ios, '11.2'
+platform :ios, '9.3'
 
 target 'Recipes' do
   use_frameworks!

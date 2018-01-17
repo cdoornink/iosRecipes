@@ -84,7 +84,7 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
             
             
-            ingredientTableHeightConstraint.constant = tableView.contentSize.height + 50
+            ingredientTableHeightConstraint.constant = tableView.contentSize.height
             
             cell = ingredientCell
         }
@@ -98,7 +98,7 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             directionCell.directionText.text = direction
             
-            directionTableHeightConstraint.constant = tableView.contentSize.height
+            directionTableHeightConstraint.constant = tableView.contentSize.height + 100
             
             cell = directionCell
         }
