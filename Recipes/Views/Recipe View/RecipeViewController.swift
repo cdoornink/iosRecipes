@@ -72,15 +72,16 @@ class RecipeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if let name = rowData["name"] as! String? {
                 ingredientCell.ingredientNameLabel.text = name
             } else {
-                ingredientCell.ingredientNameLabel.text = ":"
+                ingredientCell.ingredientNameLabel.text = " "
             }
             
             if let amount = rowData["amount"] as! String? {
-                ingredientCell.ingredientAmountLabel.text = amount
+                ingredientCell.ingredientAmountLabel.text = "\(amount) "
             } else if let section = rowData["section"] as! String? {
-                ingredientCell.ingredientAmountLabel.text = section
+                ingredientCell.ingredientAmountLabel.text = "\(section.capitalizeFirstLetter()):"
+                ingredientCell.ingredientAmountLabel.font = UIFont.boldSystemFont(ofSize: 17.0)
             } else {
-                ingredientCell.ingredientAmountLabel.text = ""
+                ingredientCell.ingredientAmountLabel.text = nil
             }
             
             

@@ -35,9 +35,25 @@ struct RecipesAPI {
                     let onShoppingList = recipe["onShoppingList"] as? Bool
                     let onMenu = recipe["onMenu"] as? Bool
                     let isCooked = recipe["isCooked"] as? Bool
+                    let cookedCount = recipe["cookedCount"] as? Int
+                    let prepTime = recipe["prepTime"] as? Int
+                    let cookTime = recipe["cookTime"] as? Int
+                    let serves = recipe["serves"] as? Int
+                    let lastCookedString = recipe["lastCooked"] as? String
+                    let cocktail = recipe["cocktail"] as? Bool
+                    let dessert = recipe["dessert"] as? Bool
                     let firebaseRef = childSnapshot.key
                     
-                    guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, onMenu: onMenu, isCooked: isCooked,  firebaseRef: firebaseRef) else {
+                    let lastCooked: Date?
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd"
+                    if lastCookedString == nil {
+                        lastCooked = nil
+                    } else {
+                        lastCooked = formatter.date(from: lastCookedString!)
+                    }
+                    
+                    guard let entry = Recipe(name: recipeName, shortName: shortName ?? recipeName, photo: photo, ingredients: ingredients, directions: directions, onShoppingList: onShoppingList, onMenu: onMenu, isCooked: isCooked, cookedCount: cookedCount, prepTime: prepTime, cookTime: cookTime, serves: serves, lastCooked: lastCooked, cocktail: cocktail, dessert: dessert, firebaseRef: firebaseRef) else {
                         fatalError("Unable to instanstiate recipe")
                     }
                     
@@ -85,6 +101,33 @@ struct RecipesAPI {
                 
                 items += [entry]
                 
+            }
+            callback(items)
+        })
+    }
+    
+    /*
+     loadGroceryListItems
+     
+     Pulls the list of previously added grocery list items to suggest to the user when they are typing in
+     items to add to their grocery list.
+     */
+    func getItemSuggestions(callback: @escaping (Array<String>) -> ()) {
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        ref.child("items").observe(.value, with: { (snapshot) in
+            
+            var items = [String]()
+            
+            for child in snapshot.children {
+                let childSnapshot = child as! DataSnapshot
+                
+                let item = childSnapshot.value as? [String : AnyObject] ?? [:]
+                
+                let name = item["title"] as! String
+                
+                items += [name]
             }
             callback(items)
         })
@@ -267,7 +310,18 @@ struct RecipesAPI {
         var ref: DatabaseReference!
         ref = Database.database().reference()
         
-        ref.child("recipes").child(recipe.firebaseRef).child("isCooked").setValue(!recipe.isCooked!)
+        let recipeIsCooked = !recipe.isCooked!
+        
+        ref.child("recipes").child(recipe.firebaseRef).child("isCooked").setValue(recipeIsCooked)
+        
+        if recipeIsCooked {
+            let date = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            let formattedDate = formatter.string(from: date)
+            
+            ref.child("recipes").child(recipe.firebaseRef).child("lastCooked").setValue(formattedDate)
+        }
     }
 
 }

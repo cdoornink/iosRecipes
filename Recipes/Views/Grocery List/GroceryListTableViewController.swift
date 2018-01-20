@@ -19,6 +19,8 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     var recipes = [Recipe]()
     var filteredRecipes = [Recipe]()
     var groceryListItems = [GroceryListItem]()
+    var itemSuggestions = [String]()
+    var filteredItemSuggestions = [String]()
     var organizedGroceryList = [Aisle]()
     var inputTextValue = ""
     
@@ -26,6 +28,9 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let nib = UINib(nibName: "TableSectionHeader", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: "TableSectionHeader")
         
         ref = Database.database().reference()
         
@@ -38,6 +43,11 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         recipesAPI.getGroceryListItems(callback: {(groceryListItems: Array<GroceryListItem>) -> Void in
             self.groceryListItems = groceryListItems
             self.organizeItems()
+        })
+        
+        recipesAPI.getItemSuggestions(callback: {(itemSuggestions: Array<String>) -> Void in
+            self.itemSuggestions = itemSuggestions
+            print(itemSuggestions)
         })
 
         itemAddBar.setImage(UIImage(named: "add-to-cart-gray"), for: .search, state: .normal)
@@ -58,27 +68,52 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return organizedGroceryList.count + 1
+        return organizedGroceryList.count + 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if organizedGroceryList.count == section {
+        if section == 0 {
+            return self.filteredItemSuggestions.count > 0 ? 1 : 0
+        } else if organizedGroceryList.count == section - 1 {
             return 1
+        } else if organizedGroceryList.count == 0 {
+            return 0
         }
-        return organizedGroceryList[section].items!.count
+        return organizedGroceryList[section - 1].items!.count
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if organizedGroceryList.count == section {
-            return 0
-        } else if organizedGroceryList[section].items!.count > 0 {
-            return 30
+        var height: CGFloat = 0
+        if section == 0  || organizedGroceryList.count == section - 1 {
+            height = 0
+        } else if organizedGroceryList.count != 0 && organizedGroceryList[section - 1].items!.count > 0 {
+            height = 30
         }
-        return 0
+        return height
     }
     
+//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        print("What the hell")
+//        // Here, we use NSFetchedResultsController
+//        // And we simply use the section name as title
+//        var sectionTitle = ""
+//        if organizedGroceryList.count == section {
+//            sectionTitle = ""
+//        }
+//        if organizedGroceryList[section].items!.count > 0 {
+//            sectionTitle = organizedGroceryList[section].name.uppercased()
+//        }
+//
+//        // Dequeue with the reuse identifier
+//        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableSectionHeader")
+//        let header = cell as! TableSectionHeader
+//        header.headerTitle.text = sectionTitle
+//
+//        return cell
+//    }
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if organizedGroceryList.count == indexPath.section {
+        if organizedGroceryList.count == indexPath.section - 1 {
             if (groceryListItems.count > 0) {
                 return 100
             }
@@ -88,17 +123,60 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if organizedGroceryList.count == section {
-            return ""
+        var title = ""
+        if section == 0 || organizedGroceryList.count == section - 1 || organizedGroceryList.count == 0 {
+            title = ""
+        } else if organizedGroceryList[section-1].items!.count > 0 {
+            title = organizedGroceryList[section-1].name.uppercased()
         }
-        if organizedGroceryList[section].items!.count > 0 {
-            return organizedGroceryList[section].name.uppercased()
-        }
-        return ""
+        return title
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if organizedGroceryList.count == indexPath.section {
+        
+        // Top cell - Item Suggestions section
+        if indexPath.section == 0 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListItemSuggestionsTableViewCell", for: indexPath) as? GroceryListItemSuggestionsTableViewCell else {
+                fatalError("The dequeued cell is not an instance of GroceryListItemSuggestionsTableViewCell.")
+            }
+            
+            cell.suggestionOneLabel.isHidden = true
+            cell.suggestionTwoLabel.isHidden = true
+            cell.suggestionThreeLabel.isHidden = true
+            
+            if self.filteredItemSuggestions.count > 0 {
+                cell.suggestionOneLabel.setTitle(self.filteredItemSuggestions[0], for: .normal)
+                cell.suggestionOneLabel.setTitleColor(Colors.darkBlue, for: .normal)
+                cell.suggestionOneLabel.layer.borderColor = Colors.darkBlue.cgColor
+                cell.suggestionOneLabel.layer.cornerRadius = 10
+                cell.suggestionOneLabel.layer.borderWidth = 2
+                cell.suggestionOneLabel.isHidden = false
+            }
+            
+            if self.filteredItemSuggestions.count > 1 {
+                cell.suggestionTwoLabel.setTitle(self.filteredItemSuggestions[1], for: .normal)
+                cell.suggestionTwoLabel.setTitleColor(Colors.blue, for: .normal)
+                cell.suggestionTwoLabel.layer.borderColor = Colors.blue.cgColor
+                cell.suggestionTwoLabel.layer.cornerRadius = 10
+                cell.suggestionTwoLabel.layer.borderWidth = 2
+                cell.suggestionTwoLabel.isHidden = false
+            }
+            
+            if self.filteredItemSuggestions.count > 2 {
+                cell.suggestionThreeLabel.setTitle(self.filteredItemSuggestions[2], for: .normal)
+                cell.suggestionThreeLabel.setTitleColor(Colors.brightBlue, for: .normal)
+                cell.suggestionThreeLabel.titleLabel?.textColor = Colors.white
+                cell.suggestionThreeLabel.layer.borderColor = Colors.brightBlue.cgColor
+                cell.suggestionThreeLabel.layer.cornerRadius = 10
+                cell.suggestionThreeLabel.layer.borderWidth = 2
+                cell.suggestionThreeLabel.isHidden = false
+            }
+            
+            return cell
+        }
+        
+        // Bottom cell - Finished Shopping button section
+        if organizedGroceryList.count == indexPath.section - 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListCompletedTableViewCell", for: indexPath) as? GroceryListCompletedTableViewCell else {
                 fatalError("The dequeued cell is not an instance of GroceryListCompletedTableViewCell.")
             }
@@ -108,11 +186,12 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
             return cell
         }
         
+        // All other sections - aisles and grocery list items
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroceryListTableViewCell", for: indexPath) as? GroceryListTableViewCell else {
             fatalError("The dequeued cell is not an instance of GroceryListTableViewCell.")
         }
         
-        let item = organizedGroceryList[indexPath.section].items![indexPath.row]
+        let item = organizedGroceryList[indexPath.section-1].items![indexPath.row]
         
         cell.name.text = item.name.capitalizeFirstLetter()
         cell.recipes.text = item.recipes?.joined(separator: ", ")
@@ -148,7 +227,7 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         if editingStyle == .delete {
             // Delete the row from the data source
             // tableView.deleteRows(at: [indexPath], with: .fade)
-            let itemToRemove = organizedGroceryList[indexPath.section].items![indexPath.row]
+            let itemToRemove = organizedGroceryList[indexPath.section - 1].items![indexPath.row]
             
             let api = RecipesAPI()
             api.removeItemFromList(itemToRemove)
@@ -159,11 +238,11 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     
     // Override tapping of the item table cell to mark as (inCart / not inCart)
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if organizedGroceryList.count == indexPath.section {
+        if indexPath.section == 0 || organizedGroceryList.count == indexPath.section - 1 {
             return
         }
         
-        let tappedItem = organizedGroceryList[indexPath.section].items![indexPath.row]
+        let tappedItem = organizedGroceryList[indexPath.section - 1].items![indexPath.row]
         
         tappedItem.inCart = !tappedItem.inCart
         
@@ -183,6 +262,11 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     */
     
     // MARK: Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.inputTextValue = searchText
+        self.filterItemSuggestions()
+    }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let newItem = searchBar.text {
             let api = RecipesAPI()
@@ -199,6 +283,9 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         searchBar.text = ""
         searchBar.endEditing(true)
         searchBar.showsCancelButton = false
+        self.inputTextValue = ""
+        self.filterItemSuggestions()
+        
     }
     
     // MARK: Private Methods
@@ -253,8 +340,20 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         self.filteredRecipes = self.recipes.filter({ (recipe: Recipe) -> Bool in
             return recipe.onShoppingList == true
         })
+    }
+    
+    private func filterItemSuggestions() {
+        let matchingSuggestions = self.itemSuggestions.filter { (itemString) -> Bool in
+            return itemString.lowercased().range(of: self.inputTextValue.lowercased()) != nil
+        }
         
-        print(self.recipes.count, self.filteredRecipes.count)
+        self.filteredItemSuggestions = matchingSuggestions.sorted {
+            let indexOne = $0.lowercased().range(of: self.inputTextValue.lowercased())?.lowerBound.encodedOffset //There's got to be a better way to do javascript indexOf(String) in Swift than this!!
+            let indexTwo = $1.lowercased().range(of: self.inputTextValue.lowercased())?.lowerBound.encodedOffset
+            return indexOne! < indexTwo!
+        }
+
+        self.tableView.reloadData()
     }
 
 }

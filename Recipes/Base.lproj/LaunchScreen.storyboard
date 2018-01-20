@@ -18,15 +18,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="sweet-potato-salad" translatesAutoresizingMaskIntoConstraints="NO" id="eKu-3A-DON">
-                                <rect key="frame" x="0.0" y="-7" width="375" height="674"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sweet-potato-splash" translatesAutoresizingMaskIntoConstraints="NO" id="eKu-3A-DON">
+                                <rect key="frame" x="-10" y="-7" width="375" height="674"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="eKu-3A-DON" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="PbJ-FH-pad"/>
-                            <constraint firstItem="eKu-3A-DON" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="jiC-CZ-lRx"/>
-                            <constraint firstItem="eKu-3A-DON" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="-1" id="rrr-ql-cbn"/>
+                            <constraint firstItem="eKu-3A-DON" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="-10" id="PbJ-FH-pad"/>
+                            <constraint firstItem="eKu-3A-DON" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-10" id="jiC-CZ-lRx"/>
+                            <constraint firstItem="eKu-3A-DON" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="-7" id="rrr-ql-cbn"/>
                             <constraint firstItem="eKu-3A-DON" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="vgv-rC-jLS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -38,6 +38,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="sweet-potato-salad" width="300" height="450"/>
+        <image name="sweet-potato-splash" width="300" height="450"/>
     </resources>
 </document>

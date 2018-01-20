@@ -33,6 +33,11 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
         recipesAPI.getRecipes(callback: {(recipes: Array<Recipe>) -> Void in
             self.recipes = recipes
             self.filterRecipes()
+            
+            let tabBar = TabBar()
+            tabBar.setGroceryListBadge(recipes, tabBarController: self.tabBarController!)
+            tabBar.setMenuBadge(recipes, tabBarController: self.tabBarController!)
+            
         })
         
         recipesAPI.getGroceryListItems(callback: {(groceryListItems: Array<GroceryListItem>) -> Void in
