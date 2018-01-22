@@ -155,8 +155,6 @@ class RecipeTableViewController: UITableViewController, UISearchBarDelegate {
             })
         }
         
-        print(self.recipes.count, self.filteredRecipes.count)
-        
         self.tableView.reloadData()
     }
 

@@ -162,7 +162,7 @@ struct RecipesAPI {
      Adds an item to the Grocery List, taking into account duplicates and pluralization, also marks if the
      item is part of a recipe.
      */
-    func addItemToList(_ item: String, _ groceryListItems: Array<GroceryListItem>, _ recipe: Recipe? = nil) {
+    func addItemToList(_ item: String, _ groceryListItems: Array<GroceryListItem>, _ recipe: Recipe? = nil, itemSuggestions: Array<String>? = []) {
         if item.count < 2 {
             return
         }
@@ -211,9 +211,12 @@ struct RecipesAPI {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "recipes": [recipe?.shortName]])
             } else {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "manuallyAdded": true])
+                print("itemSuggestions = \(itemSuggestions)")
+                if itemSuggestions!.count > 0 {
+                    self.addItemToItemSuggestions(item, itemSuggestions!)
+                }
             }
         } else {
-            print("duplicate found!")
             let duplicate = duplicates[0]
             
             if recipe != nil {
@@ -241,7 +244,6 @@ struct RecipesAPI {
     }
     
     func removeRecipeFromList(_ recipe: Recipe, _ groceryListItems: Array<GroceryListItem>) {
-        print("remove \(recipe.name) from the list")
         let items = groceryListItems.filter({ (item) -> Bool in
             return item.recipes?.contains(recipe.shortName) == true
         })
@@ -257,7 +259,6 @@ struct RecipesAPI {
     }
     
     func removeItemFromList(_ item: GroceryListItem, _ recipe: Recipe? = nil) {
-        print("remove \(item.name) from list")
         var ref: DatabaseReference!
         ref = Database.database().reference()
         
@@ -291,7 +292,6 @@ struct RecipesAPI {
         ref = Database.database().reference()
         
         ref.child("shoppingList").removeValue()
-        print(recipes)
         recipes.forEach { (recipe) in
             if recipe.onMenu == true {
                 ref.child("recipes").child(recipe.firebaseRef).child("onMenu").setValue(false)
@@ -321,6 +321,19 @@ struct RecipesAPI {
             let formattedDate = formatter.string(from: date)
             
             ref.child("recipes").child(recipe.firebaseRef).child("lastCooked").setValue(formattedDate)
+        }
+    }
+    
+    func addItemToItemSuggestions(_ item: String, _ itemSuggestions: Array<String>) {
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
+        
+        let matchedItem = itemSuggestions.filter {
+            return $0.lowercased() == item.lowercased()
+        }
+        
+        if (matchedItem.count == 0) {
+            ref.child("items").childByAutoId().setValue(["title": item])
         }
     }
 

@@ -331,22 +331,31 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="IqS-qZ-0Fw">
-                                            <rect key="frame" x="21" y="37" width="51" height="24"/>
+                                            <rect key="frame" x="21" y="33" width="51" height="24"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <inset key="contentEdgeInsets" minX="5" minY="4" maxX="5" maxY="4"/>
                                             <state key="normal" title="Button"/>
+                                            <connections>
+                                                <action selector="clickSuggestionOne:" destination="ip6-BG-9I6" eventType="touchUpInside" id="2OP-1R-qTO"/>
+                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WX4-gl-DZq">
-                                            <rect key="frame" x="82" y="37" width="51" height="24"/>
+                                            <rect key="frame" x="82" y="33" width="51" height="24"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <inset key="contentEdgeInsets" minX="5" minY="4" maxX="5" maxY="4"/>
                                             <state key="normal" title="Button"/>
+                                            <connections>
+                                                <action selector="clickSuggestionTwo:" destination="ip6-BG-9I6" eventType="touchUpInside" id="X5l-Ed-1cm"/>
+                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IAV-bu-dJo">
-                                            <rect key="frame" x="143" y="37" width="51" height="24"/>
+                                            <rect key="frame" x="143" y="33" width="51" height="24"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <inset key="contentEdgeInsets" minX="5" minY="4" maxX="5" maxY="4"/>
                                             <state key="normal" title="Button"/>
+                                            <connections>
+                                                <action selector="clickSuggestionThree:" destination="ip6-BG-9I6" eventType="touchUpInside" id="4OT-dm-Ygx"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <constraints>
@@ -356,7 +365,7 @@
                                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="IAV-bu-dJo" secondAttribute="trailing" constant="20" symbolic="YES" id="O7R-Mb-PGH"/>
                                         <constraint firstItem="IAV-bu-dJo" firstAttribute="leading" secondItem="WX4-gl-DZq" secondAttribute="trailing" constant="10" id="UeF-sg-gGL"/>
                                         <constraint firstItem="IqS-qZ-0Fw" firstAttribute="leading" secondItem="KXf-Yq-4p7" secondAttribute="leadingMargin" constant="5" id="Zex-bv-ndT"/>
-                                        <constraint firstItem="WX4-gl-DZq" firstAttribute="centerY" secondItem="KXf-Yq-4p7" secondAttribute="centerY" id="tw7-4g-mXN"/>
+                                        <constraint firstItem="WX4-gl-DZq" firstAttribute="centerY" secondItem="KXf-Yq-4p7" secondAttribute="centerY" constant="-5" id="tw7-4g-mXN"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

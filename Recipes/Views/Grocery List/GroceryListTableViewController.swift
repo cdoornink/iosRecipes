@@ -47,10 +47,9 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         
         recipesAPI.getItemSuggestions(callback: {(itemSuggestions: Array<String>) -> Void in
             self.itemSuggestions = itemSuggestions
-            print(itemSuggestions)
         })
 
-        itemAddBar.setImage(UIImage(named: "add-to-cart-gray"), for: .search, state: .normal)
+        self.itemAddBar.setImage(UIImage(named: "add-to-cart-gray"), for: .search, state: .normal)
         
     }
     
@@ -113,6 +112,9 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
 //    }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return 40
+        }
         if organizedGroceryList.count == indexPath.section - 1 {
             if (groceryListItems.count > 0) {
                 return 100
@@ -171,6 +173,10 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
                 cell.suggestionThreeLabel.layer.borderWidth = 2
                 cell.suggestionThreeLabel.isHidden = false
             }
+            
+            cell.groceryListItems = self.groceryListItems
+            cell.controller = self
+            
             
             return cell
         }
@@ -270,9 +276,11 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let newItem = searchBar.text {
             let api = RecipesAPI()
-            api.addItemToList(newItem, self.groceryListItems)
+            api.addItemToList(newItem, self.groceryListItems, itemSuggestions: self.itemSuggestions)
         }
         searchBar.text = ""
+        self.inputTextValue = ""
+        self.filterItemSuggestions()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -342,7 +350,7 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         })
     }
     
-    private func filterItemSuggestions() {
+    func filterItemSuggestions() {
         let matchingSuggestions = self.itemSuggestions.filter { (itemString) -> Bool in
             return itemString.lowercased().range(of: self.inputTextValue.lowercased()) != nil
         }
