@@ -63,7 +63,7 @@ class GroceryListMenuTableViewController: UITableViewController {
             let origImage = UIImage(named: "shopping-list")
             let tintedImage = origImage?.withRenderingMode(.alwaysTemplate)
             cell.addToCartButton.setImage(tintedImage, for: .normal)
-            cell.addToCartButton.tintColor = UIColor(red:0.00, green:0.56, blue:0.03, alpha:1.0)
+            cell.addToCartButton.tintColor = Colors.blue
         } else {
             cell.addToCartButton.setImage(UIImage(named: "add-to-cart"), for: .normal)
         }

@@ -168,6 +168,7 @@ struct FredMeyer {
         Item(word: "ice cream", aisle: "freezer"),
         Item(word: "icecream", aisle: "freezer"),
         Item(word: "jack", aisle: "cheese"),
+        Item(word: "jam", aisle: "spreads"),
         Item(word: "kale", aisle: "produce"),
         Item(word: "ketchup", aisle: "pasta"),
         Item(word: "lemon juice", aisle: "pasta"),

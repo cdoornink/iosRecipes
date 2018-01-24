@@ -211,7 +211,6 @@ struct RecipesAPI {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "recipes": [recipe?.shortName]])
             } else {
                 ref.child("shoppingList").childByAutoId().setValue(["title": item, "manuallyAdded": true])
-                print("itemSuggestions = \(itemSuggestions)")
                 if itemSuggestions!.count > 0 {
                     self.addItemToItemSuggestions(item, itemSuggestions!)
                 }
@@ -295,6 +294,7 @@ struct RecipesAPI {
         recipes.forEach { (recipe) in
             if recipe.onMenu == true {
                 ref.child("recipes").child(recipe.firebaseRef).child("onMenu").setValue(false)
+                ref.child("recipes").child(recipe.firebaseRef).child("cookedCount").setValue(recipe.cookedCount! + 1)
             }
             if recipe.isCooked == true {
                 ref.child("recipes").child(recipe.firebaseRef).child("isCooked").setValue(false)

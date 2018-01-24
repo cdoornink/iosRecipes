@@ -242,6 +242,12 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
         }    
     }
     
+//    @available(iOS 11.0, *)
+//    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let editAction = self.editIngredientAction(forRowAtIndexPath: indexPath)
+//        return UISwipeActionsConfiguration(actions: [editAction])
+//    }
+    
     // Override tapping of the item table cell to mark as (inCart / not inCart)
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 || organizedGroceryList.count == indexPath.section - 1 {
@@ -363,5 +369,17 @@ class GroceryListTableViewController: UITableViewController, UISearchBarDelegate
 
         self.tableView.reloadData()
     }
+    
+//    @available(iOS 11.0, *)
+//    func editIngredientAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+//        print("triggered it!")
+//        let item = organizedGroceryList[indexPath.section - 1].items![indexPath.row]
+//        let action = UIContextualAction(style: .normal, title: "Move") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+//            print("tThis is the action for \(item.name)!!!!")
+//
+//        }
+//        action.backgroundColor = Colors.brightBlue
+//        return action
+//    }
 
 }
